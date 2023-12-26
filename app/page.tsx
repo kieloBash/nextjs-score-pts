@@ -1,23 +1,12 @@
-"use client";
-
-import { addPlayer } from "@/components/temp/temp";
-import { Button } from "@/components/ui/button";
-import usePlayers from "@/hooks/usePlayers";
+import Display from "@/components/display";
+import { FormPlayer } from "@/components/form";
 
 export default function Home() {
-  const players = usePlayers();
-  console.log(players);
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Button
-        type="button"
-        onClick={async () => {
-          const res = await addPlayer({ name: "Kels" });
-          if (res) alert("Success");
-        }}
-      >
-        Add Player
-      </Button>
+    <main className="flex flex-col items-center justify-center min-h-screen p-10 bg-gradient-to-r from-blue-800 to-indigo-900">
+      <div className="mb-8 font-black text-white text-8xl">Player Scores</div>
+      <Display />
+      {/* <FormPlayer /> */}
     </main>
   );
 }
