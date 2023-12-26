@@ -1,23 +1,22 @@
 "use client";
-import { Check, Pen, Plus } from "lucide-react";
+import { Pen, Plus } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-const notifications = [
-  {
-    title: "Your call has been confirmed.",
-    description: "1 hour ago",
-  },
-];
+import Image from "next/image";
+import Allen from "/public/pics/allen.png";
+import Kielo from "/public/pics/kielo.png";
+import Klark from "/public/pics/klark.png";
+import Perry from "/public/pics/perry.png";
+import Ashton from "/public/pics/ashton.png";
+import Leanne from "/public/pics/leanne.png";
 
 interface player_type {
   id: string;
@@ -42,6 +41,15 @@ const PlayerCard: React.FC<CardPropsWithPlayer> = ({
   handleOpenEdit,
   place,
 }) => {
+  let img;
+
+  if (player.name === "Allen") img = Allen;
+  if (player.name === "Kielo") img = Kielo;
+  if (player.name === "Klark") img = Klark;
+  if (player.name === "Perry") img = Perry;
+  if (player.name === "Ashton") img = Ashton;
+  if (player.name === "Leanne") img = Leanne;
+
   return (
     <Card className={cn("w-[300px]", className)}>
       <CardHeader>
@@ -52,8 +60,11 @@ const PlayerCard: React.FC<CardPropsWithPlayer> = ({
           You have played {player.gamesPlayed-1} games
         </CardDescription> */}
       </CardHeader>
-      <CardContent className="">
-        <div className="text-4xl font-extrabold text-center">
+      <CardContent className="relative flex flex-col">
+        <div className="absolute overflow-hidden -translate-x-1/2 rounded-full w-44 h-44 -top-4 left-1/2">
+          <Image alt="Pic" src={img || ""} fill objectFit={"cover"} />
+        </div>
+        <div className="pt-40 text-4xl font-extrabold text-center">
           Php {player.score.toLocaleString()}{" "}
           <Button
             variant={"ghost"}
