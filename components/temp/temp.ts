@@ -74,7 +74,11 @@ export async function addScore({ id, points }: { id: string; points: number }) {
 
 export async function fetchPlayers() {
   try {
-    const players = await prisma.player.findMany({});
+    const players = await prisma.player.findMany({
+      orderBy: {
+        score: "desc",
+      },
+    });
 
     return players;
   } catch (error: any) {
