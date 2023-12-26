@@ -23,8 +23,8 @@ const Display = () => {
     <>
       <EditModal open={openEdit} setOpen={setOpenEdit} selected={selected} />
       <AddModal open={open} setOpen={setOpen} selected={selected} />
-      <section className="flex items-center justify-center ">
-        <div className="grid flex-1 grid-cols-3 grid-rows-2 gap-8">
+      <section className="flex items-center justify-center w-full h-full">
+        <div className="flex flex-col w-full h-full grid-cols-3 grid-rows-2 gap-8 lg:grid">
           {players?.data?.map((player) => {
             return (
               <div

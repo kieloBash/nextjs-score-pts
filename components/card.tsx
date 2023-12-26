@@ -41,7 +41,7 @@ const PlayerCard: React.FC<CardPropsWithPlayer> = ({
   handleOpenEdit,
 }) => {
   return (
-    <Card className={cn("w-[380px]", className)}>
+    <Card className={cn("lg:w-[380px] w-[300px]", className)}>
       <CardHeader>
         <CardTitle className="font-bold capitalize">{player.name}</CardTitle>
         <CardDescription>
