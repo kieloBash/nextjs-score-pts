@@ -30,6 +30,7 @@ type CardPropsWithPlayer = CardProps & {
   player: player_type;
   handleOpenAdd: (id: string) => void;
   handleOpenEdit: (id: string) => void;
+  place: number;
 };
 
 type CardProps = React.ComponentProps<typeof Card>;
@@ -39,14 +40,17 @@ const PlayerCard: React.FC<CardPropsWithPlayer> = ({
   player,
   handleOpenAdd,
   handleOpenEdit,
+  place,
 }) => {
   return (
-    <Card className={cn("lg:w-[380px] w-[300px]", className)}>
+    <Card className={cn("w-[300px]", className)}>
       <CardHeader>
-        <CardTitle className="font-bold capitalize">{player.name}</CardTitle>
-        <CardDescription>
+        <CardTitle className="capitalize">
+          Top {place + 1}. {player.name}
+        </CardTitle>
+        {/* <CardDescription>
           You have played {player.gamesPlayed-1} games
-        </CardDescription>
+        </CardDescription> */}
       </CardHeader>
       <CardContent className="">
         <div className="text-4xl font-extrabold text-center">

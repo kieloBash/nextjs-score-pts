@@ -24,14 +24,15 @@ const Display = () => {
       <EditModal open={openEdit} setOpen={setOpenEdit} selected={selected} />
       <AddModal open={open} setOpen={setOpen} selected={selected} />
       <section className="flex items-center justify-center w-full h-full">
-        <div className="flex flex-col w-full h-full grid-cols-3 grid-rows-2 gap-8 lg:grid">
-          {players?.data?.map((player) => {
+        <div className="flex flex-col grid-cols-3 grid-rows-2 gap-8 lg:grid">
+          {players?.data?.map((player, index) => {
             return (
               <div
                 className="flex items-center justify-center w-full h-full"
                 key={player.id}
               >
                 <PlayerCard
+                  place={index}
                   player={player}
                   handleOpenAdd={handleOpenAdd}
                   handleOpenEdit={handleOpenEdit}
