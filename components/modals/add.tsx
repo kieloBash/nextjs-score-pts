@@ -12,8 +12,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useQueryClient } from "@tanstack/react-query";
 import { FormEvent, useState } from "react";
-import { addScore, updateScore } from "../temp/temp";
 import { Loader2 } from "lucide-react";
+import { addScore } from "@/lib/actions/game";
 
 export function AddModal({
   open,

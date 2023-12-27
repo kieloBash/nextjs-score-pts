@@ -1,14 +1,14 @@
 "use client";
-import { fetchPlayers } from "@/components/temp/temp";
+import { fetchPlayers } from "@/lib/actions/game";
 import { useQuery } from "@tanstack/react-query";
 
 const usePlayers = () => {
   const { data, isLoading } = useQuery({
     queryKey: [`players`],
     queryFn: async () => {
-      const savings = await fetchPlayers();
+      const players = await fetchPlayers();
 
-      return savings;
+      return players;
     },
   });
   return { data, isLoading };

@@ -16,8 +16,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Label } from "./ui/label";
-import { addPlayer } from "./temp/temp";
 import { useQueryClient } from "@tanstack/react-query";
+import { addPlayer } from "@/lib/actions/game";
 
 const formSchema = z.object({
   name: z.string().min(2, {

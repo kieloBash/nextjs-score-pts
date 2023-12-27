@@ -1,5 +1,5 @@
 "use client";
-import { Pen, Plus } from "lucide-react";
+import { Pen, Plus, PlusSquare } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,8 @@ interface player_type {
   id: string;
   name: string;
   score: number;
-  gamesPlayed: number;
+  fortuneId: string | null;
+  feudId: string | null;
 }
 
 type CardPropsWithPlayer = CardProps & {
@@ -51,34 +52,34 @@ const PlayerCard: React.FC<CardPropsWithPlayer> = ({
   if (player.name === "Leanne") img = Leanne;
 
   return (
-    <Card className={cn("w-[300px]", className)}>
+    <Card className={cn("w-[260px]", className)}>
       <CardHeader>
         <CardTitle className="capitalize">
-          Top {place + 1}. {player.name}
+          <span className="font-black text-main-400">Top {place + 1}.</span>{" "}
+          {player.name}
         </CardTitle>
-        {/* <CardDescription>
-          You have played {player.gamesPlayed-1} games
-        </CardDescription> */}
       </CardHeader>
       <CardContent className="relative flex flex-col">
-        <div className="absolute overflow-hidden -translate-x-1/2 rounded-full w-44 h-44 -top-4 left-1/2">
+        <div className="absolute w-40 h-40 overflow-hidden -translate-x-1/2 rounded-full -top-4 left-1/2">
           <Image alt="Pic" src={img || ""} fill objectFit={"cover"} />
         </div>
-        <div className="pt-40 text-4xl font-extrabold text-center">
-          Php {player.score.toLocaleString()}{" "}
-          <Button
-            variant={"ghost"}
-            className="p-1 rounded-full w-7 h-7"
-            type="button"
-            onClick={() => {
-              handleOpenEdit(player.id);
-            }}
-          >
-            <Pen />
-          </Button>
+        <div className="flex items-center justify-center gap-4 text-3xl font-extrabold text-center pt-36">
+          <div className="">Php {player.score.toLocaleString()}</div>
+          <div className="flex items-center justify-center">
+            <Button
+              variant={"ghost"}
+              className="p-1 rounded-full w-7 h-7"
+              type="button"
+              onClick={() => {
+                handleOpenEdit(player.id);
+              }}
+            >
+              <Pen />
+            </Button>
+          </div>
         </div>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="-mt-4">
         <Button
           className="w-full"
           type="button"

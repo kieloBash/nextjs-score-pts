@@ -8,8 +8,24 @@ datasource db {
 }
 
 model Player {
-  id String @id @default(auto()) @map("_id") @db.ObjectId
-  name        String
-  score       Int
-  gamesPlayed Int
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  name  String
+  score Int    @default(0)
+
+  FortuneTeam FortuneTeam? @relation(fields: [fortuneId], references: [id])
+  fortuneId   String?      @db.ObjectId
+  FeudTeam    FeudTeam?    @relation(fields: [feudTeamId], references: [id])
+  feudTeamId  String?      @db.ObjectId
+}
+
+model FortuneTeam {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  players Player[]
+  score   Int      @default(0)
+}
+
+model FeudTeam {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  players Player[]
+  score   Int      @default(0)
 }

@@ -2,6 +2,55 @@
 
 import prisma from "@/lib/prisma";
 
+export async function addPlayerDefault() {
+  try {
+    await createOrUpdatePlayer("Kielo", 0);
+    await createOrUpdatePlayer("Perry", 0);
+    await createOrUpdatePlayer("Allen", 0);
+    await createOrUpdatePlayer("Leanne", 0);
+    await createOrUpdatePlayer("Klark", 0);
+    await createOrUpdatePlayer("Ashton", 0);
+
+    return true;
+  } catch (error: any) {
+    throw new Error(`Error adding player: ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function addTeam({ playerNames }: { playerNames: string[] }) {
+  try {
+    const fortuneTeam = await prisma.fortuneTeam.create({
+      data: { score: 0 },
+    });
+
+    // Find existing players
+    const existingPlayers = await Promise.all(
+      playerNames.map((name) => prisma.player.findMany({ where: { name } }))
+    );
+
+    // Flatten the array of arrays to get a single array of players
+    const players = existingPlayers.flat();
+
+    const team = await prisma.fortuneTeam.create({
+      data: {
+        players: {
+          connect: players.map((player) => ({ id: player.id })),
+        },
+        score: 0, // initialize score
+      },
+    });
+    console.log(team);
+
+    return team;
+  } catch (error: any) {
+    throw new Error(`Error adding Teams: ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 export async function addPlayer({
   name,
   points,
@@ -44,6 +93,7 @@ export async function updateScore({
     await prisma.$disconnect();
   }
 }
+
 export async function addScore({ id, points }: { id: string; points: number }) {
   try {
     const player = await prisma.player.findFirst({
@@ -60,7 +110,6 @@ export async function addScore({ id, points }: { id: string; points: number }) {
       },
       data: {
         score: player.score + points,
-        gamesPlayed: player.gamesPlayed + 1,
       },
     });
 
@@ -105,7 +154,6 @@ async function createOrUpdatePlayer(name: string, points: number) {
       data: {
         name: name,
         score: points,
-        gamesPlayed: 1,
       },
     });
   }
@@ -117,7 +165,6 @@ async function createOrUpdatePlayer(name: string, points: number) {
     },
     data: {
       score: player.score + points,
-      gamesPlayed: player.gamesPlayed + 1,
     },
   });
 }
