@@ -1,6 +1,33 @@
 "use client";
-import React, { useState } from "react";
-import { Wheel } from "react-custom-roulette";
+import React, { useEffect, useState } from "react";
+// import { Wheel } from "react-custom-roulette";
+
+interface WheelProps {
+  mustStartSpinning: boolean;
+  prizeNumber: number;
+  data: any[];
+  onStopSpinning: () => void;
+  backgroundColors?: string[];
+  textColors?: string[];
+  outerBorderColor?: string;
+  outerBorderWidth?: number;
+  innerRadius?: number;
+  innerBorderColor?: string;
+  innerBorderWidth?: number;
+  radiusLineColor?: string;
+  radiusLineWidth?: number;
+  fontFamily?: string;
+  fontSize?: number;
+  fontWeight?: string;
+  fontStyle?: string;
+  perpendicularText?: boolean;
+  textDistance?: number;
+  spinDuration?: number;
+  startingOptionIndex?: number;
+  disableInitialAnimation?: boolean;
+}
+
+let Wheel: React.FC<WheelProps>;
 
 const reset = [
   {
@@ -19,6 +46,7 @@ const WheelComponent = ({
 }: {
   handleUpdateTeam: (turn: "A" | "B", change: string) => void;
 }) => {
+  const [loading, setLoading] = useState(true);
   const [mustSpin, setMustSpin] = useState(false);
   const [prizeNumber, setPrizeNumber] = useState(-1);
   const [turn, setTurn] = useState<"A" | "B">("A");
@@ -35,6 +63,17 @@ const WheelComponent = ({
       setMustSpin(true);
     }
   };
+
+  useEffect(() => {
+    import("react-custom-roulette").then((module) => {
+      Wheel = module.Wheel;
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading || !Wheel) {
+    return null; // Or some loading spinner
+  }
 
   return (
     <>
@@ -69,12 +108,6 @@ const WheelComponent = ({
               return prev.filter((d) => d !== prev[prizeNumber]);
             });
           }}
-          pointerProps={{
-            style: {
-              color: "black",
-            },
-          }}
-          spinDuration={0.1}
           outerBorderWidth={10}
           disableInitialAnimation={true}
         />
