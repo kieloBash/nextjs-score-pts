@@ -14,7 +14,7 @@ const reset = [
   { option: "Ashton" },
 ];
 
-export default ({
+const WheelComponent = ({
   handleUpdateTeam,
 }: {
   handleUpdateTeam: (turn: "A" | "B", change: string) => void;
@@ -82,3 +82,5 @@ export default ({
     </>
   );
 };
+
+export default WheelComponent;

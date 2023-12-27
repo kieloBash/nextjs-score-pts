@@ -1,7 +1,7 @@
 "use client";
 import SelectionCard from "@/components/fortune/global/card/selection";
 import StartButton from "@/components/fortune/global/startbtn";
-import Wheel from "@/components/wheel";
+import WheelComponent from "@/components/wheel";
 import React, { useState } from "react";
 
 const FortuneSelection = () => {
@@ -29,7 +29,7 @@ const FortuneSelection = () => {
           })}
       </div>
       <div className="flex flex-col items-center justify-center col-span-6">
-        <Wheel handleUpdateTeam={handleUpdateTeam} />
+        <WheelComponent handleUpdateTeam={handleUpdateTeam} />
         {teamA.length === 3 && teamB.length === 3 && (
           <StartButton teamA={teamA} teamB={teamB} />
         )}
