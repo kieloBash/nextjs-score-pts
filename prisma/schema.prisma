@@ -22,10 +22,19 @@ model FortuneTeam {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId
   players Player[]
   score   Int      @default(0)
+  team    String
 }
 
 model FeudTeam {
   id      String   @id @default(auto()) @map("_id") @db.ObjectId
   players Player[]
   score   Int      @default(0)
+  team    String
+}
+
+model FortuneRound {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  question String
+  answer   String
+  price    Int    @default(0)
 }

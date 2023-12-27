@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <main className={poppins.className}>
-      <section className="relative flex items-center justify-center h-screen p-10 bg-gradient-to-br from-red-500 via-red-500 to-green-500">
+      <section className="relative flex items-center justify-center w-screen h-screen p-10 bg-gradient-to-br from-red-500 via-red-500 to-green-500">
         {children}
       </section>
     </main>

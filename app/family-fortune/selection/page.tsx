@@ -18,15 +18,18 @@ const FortuneSelection = () => {
 
   return (
     <div className="grid flex-1 w-full h-full grid-cols-10 grid-rows-1">
-      <div className="grid grid-cols-1 col-span-2 grid-rows-3 gap-4 pr-10 border-r">
-        {teamA.map((player, index) => {
-          return <SelectionCard key={index} name={player} />;
-        })}
-        {Array(3 - teamA.length)
-          .fill([])
-          .map((_, index) => {
-            return <Blank key={index} />;
+      <div className="flex flex-col items-center justify-center col-span-2 gap-4 pr-10">
+        <div className="text-4xl font-bold">Team A</div>
+        <div className="grid w-full h-full grid-cols-1 grid-rows-3 gap-4">
+          {teamA.map((player, index) => {
+            return <SelectionCard key={index} name={player} />;
           })}
+          {Array(3 - teamA.length)
+            .fill([])
+            .map((_, index) => {
+              return <Blank key={index} />;
+            })}
+        </div>
       </div>
       <div className="flex flex-col items-center justify-center col-span-6">
         <WheelComponent handleUpdateTeam={handleUpdateTeam} />
@@ -34,15 +37,18 @@ const FortuneSelection = () => {
           <StartButton teamA={teamA} teamB={teamB} />
         )}
       </div>
-      <div className="grid grid-cols-1 col-span-2 grid-rows-3 gap-4 pl-10 border-l">
-        {teamB.map((player, index) => {
-          return <SelectionCard key={index} name={player} />;
-        })}
-        {Array(3 - teamB.length)
-          .fill([])
-          .map((_, index) => {
-            return <Blank key={index} />;
+      <div className="flex flex-col items-center justify-center col-span-2 gap-4 pr-10">
+        <div className="text-4xl font-bold">Team B</div>
+        <div className="grid w-full h-full grid-cols-1 grid-rows-3 gap-4">
+          {teamB.map((player, index) => {
+            return <SelectionCard key={index} name={player} />;
           })}
+          {Array(3 - teamB.length)
+            .fill([])
+            .map((_, index) => {
+              return <Blank key={index} />;
+            })}
+        </div>
       </div>
     </div>
   );

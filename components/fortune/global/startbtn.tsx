@@ -33,7 +33,6 @@ const StartButton = ({
     );
   } else
     return (
-      // <Link href={`/family-fortune/${"123"}`}>
       <Button
         disabled={isLoading}
         type="button"
@@ -41,8 +40,14 @@ const StartButton = ({
           if (teamA?.length !== 3 && teamB?.length !== 3) return null;
 
           if (teamA && teamB) {
-            const teamARes = await addTeam({ playerNames: teamA });
-            const teamBRes = await addTeam({ playerNames: teamB });
+            const teamARes = await addTeam({
+              playerNames: teamA,
+              teamName: "A",
+            });
+            const teamBRes = await addTeam({
+              playerNames: teamB,
+              teamName: "B",
+            });
 
             if (teamARes && teamBRes) {
               setisLoading(true);
@@ -58,7 +63,6 @@ const StartButton = ({
           <span className="font-black">Start</span>
         )}
       </Button>
-      // </Link>
     );
 };
 
