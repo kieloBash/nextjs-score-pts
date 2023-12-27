@@ -23,7 +23,7 @@ interface player_type {
   name: string;
   score: number;
   fortuneId: string | null;
-  feudId: string | null;
+  feudTeamId: string | null;
 }
 
 type CardPropsWithPlayer = CardProps & {
