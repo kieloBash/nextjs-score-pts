@@ -1,7 +1,7 @@
 "use client";
 import useFortuneTeams from "@/hooks/useFortuneTeams";
 import { Loader2 } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 
 import Image from "next/image";
 import Allen from "/public/pics/allen.png";
@@ -14,9 +14,13 @@ import Leanne from "/public/pics/leanne.png";
 import CountUp from "react-countup";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { addScore } from "@/lib/actions/game";
+import { useRouter } from "next/navigation";
 
 const FortuneFinishPage = () => {
   const teams = useFortuneTeams();
+  const router = useRouter();
+  const [isLoading, setisLoading] = useState(false);
 
   if (teams.isLoading)
     return (
@@ -24,14 +28,48 @@ const FortuneFinishPage = () => {
         <Loader2 className="w-6 h-6 text-white animate-spin" />
       </div>
     );
+
+  const scorePerPlayerA = Math.floor((teams.data?.teamA?.score || 0) / 3);
+  const scorePerPlayerB = Math.floor((teams.data?.teamB?.score || 0) / 3);
+
+  async function handleUpdate() {
+    console.log("object");
+    setisLoading(true);
+    let updatedPlayersScoreA: any[] = [];
+    let updatedPlayersScoreB: any[] = [];
+
+    console.log({ scorePerPlayerA, scorePerPlayerB });
+    if (teams.data?.teamA?.players) {
+      updatedPlayersScoreA = await Promise.all(
+        teams.data.teamA.players.map((player) =>
+          addScore({ id: player.id, points: scorePerPlayerA })
+        )
+      );
+    }
+
+    if (teams.data?.teamB?.players) {
+      updatedPlayersScoreB = await Promise.all(
+        teams.data.teamB.players.map((player) =>
+          addScore({ id: player.id, points: scorePerPlayerB })
+        )
+      );
+    }
+    if (updatedPlayersScoreA && updatedPlayersScoreB) {
+      router.push("/");
+      setisLoading(false);
+    }
+  }
   return (
     <>
       <div className="absolute top-10 left-10">
-        <Link href={"/"}>
-          <Button variant={"fortune"} type="button">
-            Go Back to Menu
-          </Button>
-        </Link>
+        <Button
+          disabled={isLoading}
+          variant={"fortune"}
+          type="button"
+          onClick={handleUpdate}
+        >
+          Go Back to Menu
+        </Button>
       </div>
       <section className="relative flex flex-col items-center justify-center w-full gap-8 text-white">
         <h1 className="text-6xl font-black drop-shadow-sm">Final Score</h1>
@@ -46,7 +84,7 @@ const FortuneFinishPage = () => {
                 className="font-bold drop-shadow-lg text-9xl"
               />
             </div>
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-8">
               {teams.data?.teamA?.players.map((player) => {
                 let img;
                 if (player.name === "Allen") img = Allen;
@@ -73,6 +111,13 @@ const FortuneFinishPage = () => {
                       />
                     </div>
                     <h5 className="text-xl font-bold">{player.name}</h5>
+                    <CountUp
+                      delay={6}
+                      duration={5}
+                      start={player.score}
+                      end={player.score + scorePerPlayerA}
+                      className="text-4xl font-bold"
+                    />
                   </div>
                 );
               })}
@@ -88,7 +133,7 @@ const FortuneFinishPage = () => {
                 className="font-bold drop-shadow-lg text-9xl"
               />
             </div>
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-8">
               {teams.data?.teamB?.players.map((player) => {
                 let img;
                 if (player.name === "Allen") img = Allen;
@@ -115,6 +160,13 @@ const FortuneFinishPage = () => {
                       />
                     </div>
                     <h5 className="text-xl font-bold">{player.name}</h5>
+                    <CountUp
+                      delay={6}
+                      duration={5}
+                      start={player.score}
+                      end={player.score + scorePerPlayerB}
+                      className="text-4xl font-bold"
+                    />
                   </div>
                 );
               })}
