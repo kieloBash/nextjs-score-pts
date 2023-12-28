@@ -57,7 +57,10 @@ const FortuneFinishPage = () => {
                 if (player.name === "Leanne") img = Leanne;
 
                 return (
-                  <div className="flex flex-col items-center justify-center gap-2">
+                  <div
+                    className="flex flex-col items-center justify-center gap-2"
+                    key={player.id}
+                  >
                     <div
                       className="relative w-24 h-24 overflow-hidden rounded-full"
                       key={player.id}
@@ -96,7 +99,10 @@ const FortuneFinishPage = () => {
                 if (player.name === "Leanne") img = Leanne;
 
                 return (
-                  <div className="flex flex-col items-center justify-center gap-2">
+                  <div
+                    className="flex flex-col items-center justify-center gap-2"
+                    key={player.id}
+                  >
                     <div
                       className="relative w-24 h-24 overflow-hidden rounded-full"
                       key={player.id}
