@@ -74,6 +74,61 @@ export async function addTeam({
   }
 }
 
+export async function addFeudTeam({
+  playerNames,
+  teamName,
+}: {
+  playerNames: string[];
+  teamName: "A" | "B";
+}) {
+  try {
+    // Find existing players
+    const existingPlayers = await Promise.all(
+      playerNames.map((name) => prisma.player.findMany({ where: { name } }))
+    );
+
+    // Flatten the array of arrays to get a single array of players
+    const players = existingPlayers.flat();
+
+    const existingTeam = await prisma.feudTeam.findFirst({
+      where: {
+        team: teamName,
+      },
+    });
+
+    let team;
+    if (existingTeam) {
+      team = await prisma.feudTeam.update({
+        where: {
+          id: existingTeam.id,
+        },
+        data: {
+          players: {
+            connect: players.map((player) => ({ id: player.id })),
+          },
+          score: 0, // initialize score
+        },
+      });
+    } else {
+      team = await prisma.feudTeam.create({
+        data: {
+          players: {
+            connect: players.map((player) => ({ id: player.id })),
+          },
+          score: 0, // initialize score
+          team: teamName,
+        },
+      });
+    }
+
+    return team;
+  } catch (error: any) {
+    throw new Error(`Error adding Teams: ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 export async function addPlayer({
   name,
   points,
@@ -111,6 +166,32 @@ export async function addFortuneRound({
     });
 
     console.log(round);
+
+    return round;
+  } catch (error: any) {
+    throw new Error(`Error adding round: ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function addFeudRound({
+  question,
+  answersArr: answer,
+  scoresArr: answerPts,
+}: {
+  question: string;
+  scoresArr: number[];
+  answersArr: string[];
+}) {
+  try {
+    const round = await prisma.feudRound.create({
+      data: {
+        question,
+        answer,
+        answerPts,
+      },
+    });
 
     return round;
   } catch (error: any) {
@@ -231,6 +312,18 @@ export async function fetchFortuneRounds() {
   }
 }
 
+export async function fetchFeudRounds() {
+  try {
+    const rounds = await prisma.feudRound.findMany({});
+
+    return rounds;
+  } catch (error: any) {
+    throw new Error(`Error fetching rounds ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 export async function fetchFortuneTeams() {
   try {
     const teams = await prisma.fortuneTeam.findMany({
@@ -248,6 +341,18 @@ export async function fetchFortuneTeams() {
 export async function fetchSingleFortuneRoundId({ id }: { id: string }) {
   try {
     const round = await prisma.fortuneRound.findFirst({ where: { id } });
+
+    return round;
+  } catch (error: any) {
+    throw new Error(`Error fetching round ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function fetchSingleFeudRoundId({ id }: { id: string }) {
+  try {
+    const round = await prisma.feudRound.findFirst({ where: { id } });
 
     return round;
   } catch (error: any) {

@@ -2,19 +2,19 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useState } from "react";
 import { useFortuneContext } from "../context";
-import useFortuneTeams from "@/hooks/useFortuneTeams";
 
 const QuestionDisplay = ({ question }: { question: string }) => {
   const [shown, setShown] = useState(false);
   const { turn } = useFortuneContext();
-  const team = useFortuneTeams();
   return (
     <div className="flex items-center justify-between w-full gap-10">
       <div className="flex items-center justify-center flex-1 text-6xl font-bold text-right text-white">
         <span className={`${turn === "A" && "text-green-500 drop-shadow-lg"}`}>
           Team A
         </span>
-        {turn === "A" && <ChevronLeft className="w-16 h-16 text-green-500 drop-shadow-lg" />}
+        {turn === "A" && (
+          <ChevronLeft className="w-16 h-16 text-green-500 drop-shadow-lg" />
+        )}
       </div>
       <div className="relative flex items-center justify-center p-4">
         {!shown && (
@@ -31,7 +31,9 @@ const QuestionDisplay = ({ question }: { question: string }) => {
         </div>
       </div>
       <div className="flex items-center justify-center flex-1 gap-2 text-6xl font-bold text-left text-white">
-        {turn === "B" && <ChevronRight className="w-16 h-16 text-green-500 drop-shadow-lg" />}
+        {turn === "B" && (
+          <ChevronRight className="w-16 h-16 text-green-500 drop-shadow-lg" />
+        )}
         <span className={`${turn === "B" && "text-green-500 drop-shadow-lg"}`}>
           Team B
         </span>

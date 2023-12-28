@@ -1,4 +1,10 @@
 import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 export const metadata: Metadata = {
   title: "Family Feud",
@@ -10,5 +16,11 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <main className={poppins.className}>
+      <section className="relative flex items-center justify-center w-screen h-screen p-10 bg-gradient-to-r from-amber-200 to-yellow-400">
+        {children}
+      </section>
+    </main>
+  );
 }

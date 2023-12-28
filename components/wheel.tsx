@@ -108,6 +108,7 @@ const WheelComponent = ({
               return prev.filter((d) => d !== prev[prizeNumber]);
             });
           }}
+          spinDuration={0.1}
           outerBorderWidth={10}
           disableInitialAnimation={true}
         />
