@@ -338,6 +338,20 @@ export async function fetchFortuneTeams() {
   }
 }
 
+export async function fetchFeudTeams() {
+  try {
+    const teams = await prisma.feudTeam.findMany({
+      include: { players: true },
+    });
+
+    return teams;
+  } catch (error: any) {
+    throw new Error(`Error fetching teams ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 export async function fetchSingleFortuneRoundId({ id }: { id: string }) {
   try {
     const round = await prisma.fortuneRound.findFirst({ where: { id } });
@@ -357,6 +371,71 @@ export async function fetchSingleFeudRoundId({ id }: { id: string }) {
     return round;
   } catch (error: any) {
     throw new Error(`Error fetching round ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function updateWinFeud({
+  id,
+  winner,
+  price,
+}: {
+  id: string;
+  winner: string;
+  price: number;
+}) {
+  try {
+    const round = await prisma.feudRound.update({
+      where: { id },
+      data: { winner, price },
+    });
+
+    const existingTeam = await prisma.feudTeam.findFirst({
+      where: {
+        team: winner,
+      },
+    });
+
+    const team = await prisma.feudTeam.update({
+      where: {
+        id: existingTeam?.id,
+      },
+      data: {
+        score: (existingTeam?.score || 0) + price,
+      },
+    });
+
+    return { round, team };
+  } catch (error: any) {
+    throw new Error(`Error updating round ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function updateResetFeudTeam() {
+  try {
+    const existingTeams = await prisma.feudTeam.findMany();
+
+    const updatedTeams = [];
+
+    for (const existingTeam of existingTeams) {
+      const team = await prisma.feudTeam.update({
+        where: {
+          id: existingTeam.id,
+        },
+        data: {
+          score: 0,
+        },
+      });
+
+      updatedTeams.push(team);
+    }
+
+    return updatedTeams;
+  } catch (error: any) {
+    throw new Error(`Error updating teams ${error.message}`);
   } finally {
     await prisma.$disconnect();
   }

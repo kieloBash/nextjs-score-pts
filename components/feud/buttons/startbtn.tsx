@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { addFeudTeam } from "@/lib/actions/game";
+import { addFeudTeam, updateResetFeudTeam } from "@/lib/actions/game";
 import { useRouter } from "next/navigation";
 
 const StartButton = ({
@@ -18,18 +18,26 @@ const StartButton = ({
   const [isLoading, setisLoading] = useState(false);
   const router = useRouter();
 
+  async function handleReset() {
+    setisLoading(true);
+    const res = await updateResetFeudTeam();
+    if (res) {
+      setisLoading(false);
+      router.push("/family-feud/selection");
+    }
+  }
+
   if (selection) {
     return (
-      <Link href={`/family-feud/selection`}>
-        <Button
-          type="button"
-          onClick={() => console.log("object")}
-          variant={"feud"}
-          className="font-black uppercase text-6xl mt-8 px-4 py-2 w-[20rem] h-[5rem]"
-        >
-          Start
-        </Button>
-      </Link>
+      <Button
+        type="button"
+        disabled={isLoading}
+        onClick={handleReset}
+        variant={"feud"}
+        className="font-black uppercase text-6xl mt-8 px-4 py-2 w-[20rem] h-[5rem]"
+      >
+        Start {isLoading && <Loader2 className="animate-spin" />}
+      </Button>
     );
   } else
     return (
