@@ -352,6 +352,9 @@ export async function fetchBonusRounds() {
   try {
     const bonusRounds = await prisma.feudBonusRound.findMany({
       include: { player: true },
+      orderBy: {
+        order: "asc",
+      },
     });
 
     return bonusRounds;
@@ -445,6 +448,101 @@ export async function updateWinFeud({
     });
 
     return { round, team };
+  } catch (error: any) {
+    throw new Error(`Error updating round ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function updateBonusRoundFeud({
+  playerNames,
+  doubled,
+  order,
+}: {
+  playerNames: string[];
+  doubled: boolean;
+  order: number[];
+}) {
+  try {
+    const rounds = doubled
+      ? await prisma.feudBonusRound.findMany({ where: { doubled: true } })
+      : await prisma.feudBonusRound.findMany({ where: { doubled: false } });
+
+    const existingPlayers = await Promise.all(
+      playerNames.map((name) => prisma.player.findMany({ where: { name } }))
+    );
+    const players = existingPlayers.flat();
+
+    await Promise.all(
+      rounds.map((round, index) =>
+        prisma.feudBonusRound.update({
+          where: { id: round.id },
+          data: {
+            player: {
+              connect: {
+                id: players[index].id,
+              },
+            },
+            order: order[index],
+          },
+        })
+      )
+    );
+
+    return true;
+  } catch (error: any) {
+    throw new Error(`Error updating round ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function updateDoneBonusRoundFeud({
+  data,
+}: {
+  data: {
+    name: string;
+    id: string;
+    prevScore: number;
+    amount: number;
+    correct: boolean;
+  }[];
+}) {
+  try {
+    const players = await Promise.all(
+      data.map(({ id, prevScore, amount, correct }) =>
+        prisma.player.update({
+          where: { id },
+          data: {
+            score: correct ? prevScore + amount : prevScore,
+          },
+        })
+      )
+    );
+
+    return players;
+  } catch (error: any) {
+    throw new Error(`Error updating round ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function updateGuessFeud({
+  guess,
+  id,
+}: {
+  guess: string;
+  id: string;
+}) {
+  try {
+    const round = await prisma.feudBonusRound.update({
+      where: { id },
+      data: { playerGuess: guess },
+    });
+
+    return round;
   } catch (error: any) {
     throw new Error(`Error updating round ${error.message}`);
   } finally {

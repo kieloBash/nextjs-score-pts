@@ -46,9 +46,12 @@ model FeudBonusRound {
   question String
   answer   String
   price    Int     @default(0)
-  player   Player? @relation(fields: [playerId], references: [id])
   doubled  Boolean @default(false)
+  order    Int?
+
+  player   Player? @relation(fields: [playerId], references: [id])
   playerId String? @db.ObjectId
+  playerGuess   String?
 }
 
 model FeudRound {

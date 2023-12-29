@@ -54,7 +54,7 @@ const FeudFinishPage = () => {
       );
     }
     if (updatedPlayersScoreA && updatedPlayersScoreB) {
-      router.push("/");
+      router.push("/family-feud/bonus");
       setisLoading(false);
     }
   }
@@ -67,7 +67,7 @@ const FeudFinishPage = () => {
           type="button"
           onClick={handleUpdate}
         >
-          Go Back to Menu
+          Play Bonus Round
         </Button>
       </div>
       <section className="relative flex flex-col items-center justify-center w-full gap-8 text-blue-600">

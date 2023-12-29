@@ -19,6 +19,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         fortune: "bg-green-500 text-white hover:bg-green-400",
         feud: "bg-blue-700 text-white hover:bg-blue-600",
+        feudSecondary: "bg-yellow-500 text-white hover:bg-yellow-400 text-black",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
