@@ -201,6 +201,30 @@ export async function addFeudRound({
   }
 }
 
+export async function addFeudBonusRound({
+  question,
+  answer,
+  score,
+  doubled = false,
+}: {
+  question: string;
+  score: number;
+  answer: string;
+  doubled?: boolean;
+}) {
+  try {
+    const round = await prisma.feudBonusRound.create({
+      data: { question, answer, price: score, doubled },
+    });
+
+    return round;
+  } catch (error: any) {
+    throw new Error(`Error adding bonus feud round: ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 export async function updateScore({
   id,
   points,
@@ -319,6 +343,20 @@ export async function fetchFeudRounds() {
     return rounds;
   } catch (error: any) {
     throw new Error(`Error fetching rounds ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function fetchBonusRounds() {
+  try {
+    const bonusRounds = await prisma.feudBonusRound.findMany({
+      include: { player: true },
+    });
+
+    return bonusRounds;
+  } catch (error: any) {
+    throw new Error(`Error fetching bonusRounds ${error.message}`);
   } finally {
     await prisma.$disconnect();
   }
