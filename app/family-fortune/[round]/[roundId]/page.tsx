@@ -6,6 +6,7 @@ import QuestionDisplay from "@/components/fortune/global/question-display";
 import Scoreboard from "@/components/fortune/global/scoreboard";
 import WheelTurnComponent from "@/components/fortune/wheel-turn";
 import useSingleFortuneRounds from "@/hooks/useSingleFortuneRounds";
+import { Loader2 } from "lucide-react";
 import React, { useState } from "react";
 
 const GameRoundPage = ({
@@ -16,6 +17,8 @@ const GameRoundPage = ({
   const { roundId, round: roundNum } = params;
   const round = useSingleFortuneRounds({ id: roundId });
   const [turnSelected, setTurnSelected] = useState(false);
+
+  if (round.isLoading) return <Loader2 className="w-10 h-10 animate-spin" />;
 
   return (
     <div className="relative flex flex-col items-center justify-between w-full h-full">
@@ -29,6 +32,7 @@ const GameRoundPage = ({
       <Choices
         answer={round.data?.answer || ""}
         price={round.data?.price || 0}
+        roundNum={Number(roundNum)}
       />
       <ActionButtons
         answer={round.data?.answer || ""}

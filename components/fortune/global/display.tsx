@@ -7,7 +7,7 @@ const Display = ({ answer, price }: { answer: string; price: number }) => {
 
   const { guessed } = useFortuneContext();
   return (
-    <section className="flex flex-wrap gap-4 w-full max-w-[60rem] justify-center items-center">
+    <section className="flex flex-wrap items-center justify-center w-full gap-4">
       {splitted.map((word, i) => {
         const wordArr = word.split("");
         return (
@@ -17,7 +17,14 @@ const Display = ({ answer, price }: { answer: string; price: number }) => {
               if (guessed.includes(letter)) shown = true;
 
               return (
-                <Card key={letter} value={letter} shown={shown} price={price} />
+                <>
+                  <Card
+                    key={letter}
+                    value={letter}
+                    shown={shown}
+                    price={price}
+                  />
+                </>
               );
             })}
             <div className="w-12 h-full" />
@@ -38,18 +45,20 @@ const Card = ({
   price: number;
 }) => {
   return (
-    <div
-      className={`bg-green-600 text-white w-[5rem] h-[6.5rem] border-2 flex justify-center items-center text-6xl rounded-sm relative`}
-    >
-      {shown ? (
-        <>
-          <div className="absolute text-xs font-black top-2 right-2">
-            {price}
-          </div>
-          {value}
-        </>
-      ) : null}
-    </div>
+    <>
+      <div
+        className={`bg-green-600 text-white w-[4rem] h-[5rem] border-2 flex justify-center items-center text-6xl rounded-sm relative`}
+      >
+        {shown ? (
+          <>
+            <div className="absolute text-xs font-black top-1 right-1">
+              {price}
+            </div>
+            {value}
+          </>
+        ) : null}
+      </div>
+    </>
   );
 };
 

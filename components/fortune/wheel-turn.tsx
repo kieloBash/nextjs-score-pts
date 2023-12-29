@@ -32,11 +32,11 @@ let Wheel: React.FC<WheelProps>;
 
 const reset = [
   {
-    option: "Team A",
+    option: "A",
     style: { backgroundColor: "green" },
   },
   {
-    option: "Team B",
+    option: "B",
     style: { backgroundColor: "red" },
   },
 ];
@@ -85,6 +85,8 @@ const WheelTurnComponent = ({
             else setTurn("B");
             setTurnSelected();
           }}
+          fontSize={80}
+          spinDuration={0.2}
           outerBorderWidth={10}
           disableInitialAnimation={true}
         />

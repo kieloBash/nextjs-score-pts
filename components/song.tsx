@@ -27,8 +27,6 @@ const SongMPThree = () => {
       } else {
         audioRef.current.play();
       }
-
-      console.log(src);
       setIsPlaying(!isPlaying);
     }
   };
