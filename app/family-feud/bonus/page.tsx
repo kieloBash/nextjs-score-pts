@@ -19,6 +19,10 @@ import { useRouter } from "next/navigation";
 
 const BonusFeudPage = () => {
   const bonus_rounds = useBonusFeudRounds();
+  const winIdRound = bonus_rounds.data?.find((round) => {
+    return round.doubled === true;
+  });
+
   const normal_rounds = useFeudRounds();
   const teams = useFeudTeams();
 
@@ -56,17 +60,23 @@ const BonusFeudPage = () => {
         })
         .filter((d) => d) || [];
 
-    const getParams = (players: any[], doubled: boolean) => ({
-      doubled,
-      playerNames: players.map((d) => d?.name || ""),
-      order: players.map((d) => d?.order || 0),
+    const winners = await updateBonusRoundFeud({
+      playerNames:
+        winningTeam?.players.map((player) => {
+          return player.id;
+        }) || [],
+      doubled: true,
+    });
+    const losers = await updateBonusRoundFeud({
+      playerNames:
+        losingTeam?.players.map((player) => {
+          return player.id;
+        }) || [],
+      doubled: false,
     });
 
-    const winners = await updateBonusRoundFeud(getParams(winPlayers, true));
-    const losers = await updateBonusRoundFeud(getParams(losePlayers, false));
-
     if (winners && losers) {
-      router.push(`/family-feud/bonus/1`);
+      router.push(`/family-feud/bonus/${winIdRound?.id}`);
       setisLoading(false);
     }
   }
@@ -82,17 +92,7 @@ const BonusFeudPage = () => {
         <h2 className="">Scoreboard</h2>
         <div className="flex items-center justify-center gap-2">
           <Button
-            disabled={order.length === 0 || isLoading}
-            variant={"feudSecondary"}
-            type="button"
-            onClick={() => setOrder([])}
-            className="text-xl"
-          >
-            Reset <TimerResetIcon className="ml-2" />
-            {isLoading && <Loader2 className="animate-spin" />}
-          </Button>
-          <Button
-            disabled={order.length !== 6 || isLoading}
+            disabled={isLoading}
             onClick={handleStart}
             variant={"feudSecondary"}
             type="button"

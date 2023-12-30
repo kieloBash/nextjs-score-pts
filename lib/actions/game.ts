@@ -213,12 +213,6 @@ export async function addFeudBonusRound({
   doubled?: boolean;
 }) {
   try {
-    // const round = await prisma.feudBonusRound.create({
-    //   data: { question, answer, price: score, doubled },
-    // });
-
-    // return round;
-
     const round = await prisma.feudBonusRound.create({
       data: { questions, answers, price: score, doubled },
     });
@@ -355,10 +349,17 @@ export async function fetchFeudRounds() {
 
 export async function fetchBonusRounds() {
   try {
-    const bonusRounds = await prisma.feudBonusRound.findMany();
+    const bonusRounds = await prisma.feudBonusRound.findMany({
+      include: {
+        playerGuesses: {
+          include: {
+            player: true,
+          },
+        },
+      },
+    });
 
     return bonusRounds;
-    return;
   } catch (error: any) {
     throw new Error(`Error fetching bonusRounds ${error.message}`);
   } finally {
@@ -418,6 +419,27 @@ export async function fetchSingleFeudRoundId({ id }: { id: string }) {
   }
 }
 
+export async function fetchSingleBonusFeudRoundId({ id }: { id: string }) {
+  try {
+    const round = await prisma.feudBonusRound.findFirst({
+      where: { id },
+      include: {
+        playerGuesses: {
+          include: {
+            player: true,
+          },
+        },
+      },
+    });
+
+    return round;
+  } catch (error: any) {
+    throw new Error(`Error fetching round ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 export async function updateWinFeud({
   id,
   winner,
@@ -459,37 +481,52 @@ export async function updateWinFeud({
 export async function updateBonusRoundFeud({
   playerNames,
   doubled,
-  order,
 }: {
   playerNames: string[];
   doubled: boolean;
-  order: number[];
 }) {
   try {
-    // const rounds = doubled
-    //   ? await prisma.feudBonusRound.findMany({ where: { doubled: true } })
-    //   : await prisma.feudBonusRound.findMany({ where: { doubled: false } });
+    const round = doubled
+      ? await prisma.feudBonusRound.findFirst({ where: { doubled: true } })
+      : await prisma.feudBonusRound.findFirst({ where: { doubled: false } });
 
-    // const existingPlayers = await Promise.all(
-    //   playerNames.map((name) => prisma.player.findMany({ where: { name } }))
-    // );
-    // const players = existingPlayers.flat();
+    const existingPlayers = await prisma.player.findMany({
+      where: {
+        id: {
+          in: playerNames,
+        },
+      },
+    });
 
-    // await Promise.all(
-    //   rounds.map((round, index) =>
-    //     prisma.feudBonusRound.update({
-    //       where: { id: round.id },
-    //       data: {
-    //         player: {
-    //           connect: {
-    //             id: players[index].id,
-    //           },
-    //         },
-    //         order: order[index],
-    //       },
-    //     })
-    //   )
-    // );
+    if (!round || !existingPlayers.length) return false;
+
+    // Delete PlayerGuess records belonging to the current round
+    await prisma.playerGuess.deleteMany({
+      where: {
+        FeudBonusRound: {
+          id: round.id,
+        },
+      },
+    });
+
+    // Create new PlayerGuess records for each player
+    for (let player of existingPlayers) {
+      await prisma.playerGuess.create({
+        data: {
+          guess: [], // Initialize the guess array
+          FeudBonusRound: {
+            connect: {
+              id: round.id,
+            },
+          },
+          player: {
+            connect: {
+              id: player.id,
+            },
+          },
+        },
+      });
+    }
 
     return true;
   } catch (error: any) {
@@ -544,6 +581,30 @@ export async function updateGuessFeud({
     // });
 
     return;
+  } catch (error: any) {
+    throw new Error(`Error updating round ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function updateBonusGuessFeud({
+  data,
+}: {
+  data: {
+    id: string;
+    score: number;
+  }[];
+}) {
+  try {
+    for (let { id, score } of data) {
+      await prisma.playerGuess.update({
+        where: { id },
+        data: { score },
+      });
+    }
+
+    return true;
   } catch (error: any) {
     throw new Error(`Error updating round ${error.message}`);
   } finally {

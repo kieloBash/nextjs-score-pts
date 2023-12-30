@@ -12,10 +12,11 @@ model Player {
   name  String
   score Int    @default(0)
 
-  FortuneTeam FortuneTeam? @relation(fields: [fortuneId], references: [id])
-  fortuneId   String?      @db.ObjectId
-  FeudTeam    FeudTeam?    @relation(fields: [feudTeamId], references: [id])
-  feudTeamId  String?      @db.ObjectId
+  FortuneTeam FortuneTeam?  @relation(fields: [fortuneId], references: [id])
+  fortuneId   String?       @db.ObjectId
+  FeudTeam    FeudTeam?     @relation(fields: [feudTeamId], references: [id])
+  feudTeamId  String?       @db.ObjectId
+  PlayerGuess PlayerGuess[]
 }
 
 model FortuneTeam {
@@ -41,10 +42,14 @@ model FortuneRound {
 }
 
 model PlayerGuess {
-  id               String          @id @default(auto()) @map("_id") @db.ObjectId
-  guess            String[]
+  id    String   @id @default(auto()) @map("_id") @db.ObjectId
+  guess String[]
+  score Int      @default(0)
+
   FeudBonusRound   FeudBonusRound? @relation(fields: [feudBonusRoundId], references: [id])
   feudBonusRoundId String?         @db.ObjectId
+  player           Player?         @relation(fields: [playerId], references: [id])
+  playerId         String?         @db.ObjectId
 }
 
 model FeudBonusRound {
