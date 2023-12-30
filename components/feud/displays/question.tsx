@@ -29,7 +29,7 @@ const QuestionDisplay = ({
           </Button>
         )}
       </div>
-      <h1 className="text-5xl font-black text-center text-blue-700 w-full drop-shadow-lg max-w-[45rem]">
+      <h1 className="text-3xl font-black text-center text-blue-700 w-full drop-shadow-lg max-w-[45rem] line-clamp-1">
         {question}
       </h1>
       <div className="flex flex-col items-center justify-center">

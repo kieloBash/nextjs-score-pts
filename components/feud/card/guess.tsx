@@ -21,8 +21,8 @@ const GuessCard = ({
   if (shown)
     return (
       <div className="flex items-center justify-between w-full gap-2 px-6 text-center bg-yellow-500 border-8 border-blue-900 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-black text-blue-800">{data.answer}</h2>
-        <h2 className="text-3xl font-black text-blue-800">{data.score}</h2>
+        <h2 className="text-xl font-black text-left text-blue-800 line-clamp-1">{data.answer}</h2>
+        <h2 className="text-xl font-black text-blue-800">{data.score}</h2>
       </div>
     );
   else
