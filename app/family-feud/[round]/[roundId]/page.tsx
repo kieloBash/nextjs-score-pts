@@ -36,12 +36,15 @@ const GameRoundPage = ({
 
   const [TeamAScore, setTeamAScore] = useState(0);
   const [TeamBScore, setTeamBScore] = useState(0);
-  const [turn, setTurn] = useState<"A" | "B">("A");
+  const [turn, setTurn] = useState<"A" | "B" | undefined>();
   const [mistakes, setMistakes] = useState(0);
   const [stealing, setStealing] = useState(false);
   const [winner, setWinner] = useState<"A" | "B" | undefined>();
-
   const [shownArr, setShownArr] = useState<boolean[]>(reset);
+
+  const [trialTurn, setTrialTurn] = useState<"A" | "B" | undefined>();
+  const [trialGuess, setTrialGuess] = useState({ A: 0, B: 0 });
+  const [countTurnTrial, setCountTurnTrial] = useState(0);
 
   // AUDIO
   const incorrectRef = useRef<HTMLAudioElement | null>(null);
@@ -96,11 +99,185 @@ const GameRoundPage = ({
     playCorrect();
   }
 
+  function handleShowFirst(index: number) {
+    if (!trialTurn) return null;
+    let temp = [...shownArr];
+    temp[index] = true;
+    setShownArr(temp);
+    playCorrect();
+
+    if (trialTurn === "A") {
+      setTrialGuess((prev) => {
+        return { ...prev, A: round.data?.answerPts[index] || 0 };
+      });
+    } else
+      setTrialGuess((prev) => {
+        return { ...prev, B: round.data?.answerPts[index] || 0 };
+      });
+    const newTurn = trialTurn === "A" ? "B" : "A";
+
+    setTrialTurn(newTurn);
+    setCountTurnTrial((prev) => prev + 1);
+  }
+
+  useEffect(() => {
+    if (
+      ((trialGuess.A > 0 || trialGuess.B > 0) && countTurnTrial >= 2) ||
+      round.data?.answerPts[0] === trialGuess.A ||
+      round.data?.answerPts[0] === trialGuess.B
+    ) {
+      const turnIn = trialGuess.A > trialGuess.B ? "A" : "B";
+      setTurn(turnIn);
+      if (turnIn === "A") {
+        setTeamAScore(trialGuess.A + trialGuess.B);
+      } else setTeamBScore(trialGuess.A + trialGuess.B);
+    }
+  }, [countTurnTrial]);
+
+  function handleTurn(e: "A" | "B") {
+    setTrialTurn(e);
+  }
+
   if (round.isLoading || teams.isLoading)
     return (
       <div className="">
         <Loader2 className="w-8 h-8 text-white animate-spin" />
       </div>
+    );
+
+  if (!turn)
+    return (
+      <section className="relative flex flex-col items-center justify-center w-full h-full gap-4">
+        <div className="hidden">
+          <audio
+            ref={incorrectRef}
+            src={"/assets/sfx/incorrect.mp3"}
+            autoPlay={false}
+          />
+          <audio
+            ref={correctRef}
+            src={"/assets/sfx/correct.mp3"}
+            autoPlay={false}
+          />
+        </div>
+        <QuestionDisplay
+          question={round.data?.question || ""}
+          bool={true}
+          handleTurn={handleTurn}
+        />
+        {trialTurn && (
+          <>
+            {trialTurn === "A" ? (
+              <>
+                <div className="absolute mt-12 text-6xl font-bold leading-none text-center text-blue-600 uppercase -translate-y-1/2 top-1/2 left-10 drop-shadow-2xl">
+                  {Array("playing".length)
+                    .fill(["p", "l", "a", "y", "i", "n", "g"])
+                    .map((_, index) => {
+                      return (
+                        <React.Fragment key={index}>
+                          <span className="">{_[index]}</span>
+                          <br />
+                        </React.Fragment>
+                      );
+                    })}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (trialTurn) {
+                        setTrialTurn("B");
+                        playIncorrect();
+                        setCountTurnTrial((prev) => prev + 1);
+                      }
+                    }}
+                    className="flex items-center justify-center w-12 h-12 p-2 mt-6 text-white bg-red-500 rounded-full"
+                  >
+                    <X className="w-full h-full" />
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="absolute mt-12 text-6xl font-bold leading-none text-center text-blue-600 uppercase -translate-y-1/2 top-1/2 right-10 drop-shadow-2xl">
+                  {Array("playing".length)
+                    .fill(["p", "l", "a", "y", "i", "n", "g"])
+                    .map((_, index) => {
+                      return (
+                        <React.Fragment key={index}>
+                          <span className="">{_[index]}</span>
+                          <br />
+                        </React.Fragment>
+                      );
+                    })}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (trialTurn) {
+                        setTrialTurn("A");
+                        playIncorrect();
+                        setCountTurnTrial((prev) => prev + 1);
+                      }
+                    }}
+                    className="flex items-center justify-center w-12 h-12 p-2 mt-6 text-white bg-red-500 rounded-full"
+                  >
+                    <X className="w-full h-full" />
+                  </button>
+                </div>
+              </>
+            )}
+          </>
+        )}
+
+        <div className="grid w-full h-full max-w-[45rem] grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 grid-rows-4 gap-2">
+            {Array(4)
+              .fill([0, 1, 2, 3])
+              .map((_, index) => {
+                const num = _[index];
+                const data = {
+                  answer: round.data?.answer[num],
+                  score: round.data?.answerPts[num],
+                };
+                return (
+                  <GuessCard
+                    key={_[index]}
+                    index={num + 1}
+                    shown={shownArr[num]}
+                    data={data}
+                    handleShow={handleShowFirst}
+                    disabled={
+                      (mistakes === 4 && stealing === false) ||
+                      (mistakes === 3 && stealing === false)
+                    }
+                  />
+                );
+              })}
+          </div>
+          <div className="grid grid-cols-1 grid-rows-4 gap-2">
+            {Array(4)
+              .fill([4, 5, 6, 7])
+              .map((_, index) => {
+                const num = _[index];
+                const data = {
+                  answer: round.data?.answer[num],
+                  score: round.data?.answerPts[num],
+                };
+                return (
+                  <GuessCard
+                    key={_[index]}
+                    index={num + 1}
+                    shown={shownArr[num]}
+                    data={data}
+                    handleShow={handleShowFirst}
+                    disabled={
+                      (mistakes === 4 && stealing === false) ||
+                      (mistakes === 3 && stealing === false)
+                    }
+                  />
+                );
+              })}
+          </div>
+        </div>
+      </section>
     );
 
   return (
