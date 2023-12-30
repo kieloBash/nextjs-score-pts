@@ -1,5 +1,3 @@
-import { HelpDialog } from "@/components/fortune/global/helpbtn";
-import RoundsDisplay from "@/components/fortune/global/rounds-display";
 import StartButton from "@/components/fortune/global/startbtn";
 import { Anton } from "next/font/google";
 
@@ -21,9 +19,7 @@ const FamilyFortunePage = () => {
       >
         Family Fortune
       </h1>
-      <RoundsDisplay />
       <StartButton selection />
-      <HelpDialog />
     </div>
   );
 };

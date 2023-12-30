@@ -202,21 +202,26 @@ export async function addFeudRound({
 }
 
 export async function addFeudBonusRound({
-  question,
-  answer,
+  questions,
+  answers,
   score,
   doubled = false,
 }: {
-  question: string;
+  questions: string[];
+  answers: string[];
   score: number;
-  answer: string;
   doubled?: boolean;
 }) {
   try {
-    const round = await prisma.feudBonusRound.create({
-      data: { question, answer, price: score, doubled },
-    });
+    // const round = await prisma.feudBonusRound.create({
+    //   data: { question, answer, price: score, doubled },
+    // });
 
+    // return round;
+
+    const round = await prisma.feudBonusRound.create({
+      data: { questions, answers, price: score, doubled },
+    });
     return round;
   } catch (error: any) {
     throw new Error(`Error adding bonus feud round: ${error.message}`);
@@ -350,14 +355,10 @@ export async function fetchFeudRounds() {
 
 export async function fetchBonusRounds() {
   try {
-    const bonusRounds = await prisma.feudBonusRound.findMany({
-      include: { player: true },
-      orderBy: {
-        order: "asc",
-      },
-    });
+    const bonusRounds = await prisma.feudBonusRound.findMany();
 
     return bonusRounds;
+    return;
   } catch (error: any) {
     throw new Error(`Error fetching bonusRounds ${error.message}`);
   } finally {
@@ -465,30 +466,30 @@ export async function updateBonusRoundFeud({
   order: number[];
 }) {
   try {
-    const rounds = doubled
-      ? await prisma.feudBonusRound.findMany({ where: { doubled: true } })
-      : await prisma.feudBonusRound.findMany({ where: { doubled: false } });
+    // const rounds = doubled
+    //   ? await prisma.feudBonusRound.findMany({ where: { doubled: true } })
+    //   : await prisma.feudBonusRound.findMany({ where: { doubled: false } });
 
-    const existingPlayers = await Promise.all(
-      playerNames.map((name) => prisma.player.findMany({ where: { name } }))
-    );
-    const players = existingPlayers.flat();
+    // const existingPlayers = await Promise.all(
+    //   playerNames.map((name) => prisma.player.findMany({ where: { name } }))
+    // );
+    // const players = existingPlayers.flat();
 
-    await Promise.all(
-      rounds.map((round, index) =>
-        prisma.feudBonusRound.update({
-          where: { id: round.id },
-          data: {
-            player: {
-              connect: {
-                id: players[index].id,
-              },
-            },
-            order: order[index],
-          },
-        })
-      )
-    );
+    // await Promise.all(
+    //   rounds.map((round, index) =>
+    //     prisma.feudBonusRound.update({
+    //       where: { id: round.id },
+    //       data: {
+    //         player: {
+    //           connect: {
+    //             id: players[index].id,
+    //           },
+    //         },
+    //         order: order[index],
+    //       },
+    //     })
+    //   )
+    // );
 
     return true;
   } catch (error: any) {
@@ -537,12 +538,12 @@ export async function updateGuessFeud({
   id: string;
 }) {
   try {
-    const round = await prisma.feudBonusRound.update({
-      where: { id },
-      data: { playerGuess: guess },
-    });
+    // const round = await prisma.feudBonusRound.update({
+    //   where: { id },
+    //   data: { playerGuess: guess },
+    // });
 
-    return round;
+    return;
   } catch (error: any) {
     throw new Error(`Error updating round ${error.message}`);
   } finally {
@@ -572,6 +573,42 @@ export async function updateResetFeudTeam() {
     return updatedTeams;
   } catch (error: any) {
     throw new Error(`Error updating teams ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function deleteFeudRound({ id }: { id: string }) {
+  try {
+    await prisma.feudRound.delete({ where: { id } });
+
+    return true;
+  } catch (error: any) {
+    throw new Error(`Error deleting round ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function deleteFeudBonusRound({ id }: { id: string }) {
+  try {
+    await prisma.feudBonusRound.delete({ where: { id } });
+
+    return true;
+  } catch (error: any) {
+    throw new Error(`Error deleting round ${error.message}`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function deleteFortuneRound({ id }: { id: string }) {
+  try {
+    await prisma.fortuneRound.delete({ where: { id } });
+
+    return true;
+  } catch (error: any) {
+    throw new Error(`Error deleting round ${error.message}`);
   } finally {
     await prisma.$disconnect();
   }

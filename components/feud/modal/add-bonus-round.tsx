@@ -46,23 +46,23 @@ const AddBonusRoundModal = () => {
     if (!currAnswer && currScore === 0 && !question) return null;
     setIsLoading(true);
 
-    const res = await addFeudBonusRound({
-      question,
-      answer: currAnswer,
-      score: currScore,
-      doubled,
-    });
+    // const res = await addFeudBonusRound({
+    //   question,
+    //   answer: currAnswer,
+    //   score: currScore,
+    //   doubled,
+    // });
 
-    if (res) {
-      setIsLoading(false);
-      setOpen(false);
-      setCurrAnswer("");
-      setCurrScore(0);
+    // if (res) {
+    //   setIsLoading(false);
+    //   setOpen(false);
+    //   setCurrAnswer("");
+    //   setCurrScore(0);
 
-      queryClient.invalidateQueries({
-        queryKey: [`feud-rounds:bonus`],
-      });
-    }
+    //   queryClient.invalidateQueries({
+    //     queryKey: [`feud-rounds:bonus`],
+    //   });
+    // }
   }
 
   return (

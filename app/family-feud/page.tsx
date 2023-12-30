@@ -3,9 +3,9 @@ import Image from "next/image";
 
 import FamPic from "/public/pics/fam-pic.jpg";
 import StartButton from "@/components/feud/buttons/startbtn";
-import AddRoundModal from "@/components/feud/modal/add-round";
-import RoundsDisplay from "@/components/feud/displays/rounds";
-import AddBonusRoundModal from "@/components/feud/modal/add-bonus-round";
+// import AddRoundModal from "@/components/feud/modal/add-round";
+// import RoundsDisplay from "@/components/feud/displays/rounds";
+// import AddBonusRoundModal from "@/components/feud/modal/add-bonus-round";
 
 const anton = Anton({
   subsets: ["latin"],
@@ -23,10 +23,10 @@ const FamilyFeudPage = () => {
       >
         Family Feud
       </h1>
-      <RoundsDisplay />
+      {/* <RoundsDisplay /> */}
       <StartButton selection />
-      <AddRoundModal />
-      <AddBonusRoundModal />
+      {/* <AddRoundModal />
+      <AddBonusRoundModal /> */}
     </div>
   );
 };

@@ -12,11 +12,10 @@ model Player {
   name  String
   score Int    @default(0)
 
-  FortuneTeam    FortuneTeam?     @relation(fields: [fortuneId], references: [id])
-  fortuneId      String?          @db.ObjectId
-  FeudTeam       FeudTeam?        @relation(fields: [feudTeamId], references: [id])
-  feudTeamId     String?          @db.ObjectId
-  FeudBonusRound FeudBonusRound[]
+  FortuneTeam FortuneTeam? @relation(fields: [fortuneId], references: [id])
+  fortuneId   String?      @db.ObjectId
+  FeudTeam    FeudTeam?    @relation(fields: [feudTeamId], references: [id])
+  feudTeamId  String?      @db.ObjectId
 }
 
 model FortuneTeam {
@@ -41,17 +40,21 @@ model FortuneRound {
   winner   String?
 }
 
-model FeudBonusRound {
-  id       String  @id @default(auto()) @map("_id") @db.ObjectId
-  question String
-  answer   String
-  price    Int     @default(0)
-  doubled  Boolean @default(false)
-  order    Int?
+model PlayerGuess {
+  id               String          @id @default(auto()) @map("_id") @db.ObjectId
+  guess            String[]
+  FeudBonusRound   FeudBonusRound? @relation(fields: [feudBonusRoundId], references: [id])
+  feudBonusRoundId String?         @db.ObjectId
+}
 
-  player   Player? @relation(fields: [playerId], references: [id])
-  playerId String? @db.ObjectId
-  playerGuess   String?
+model FeudBonusRound {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  questions String[]
+  answers   String[]
+  price     Int      @default(0)
+  doubled   Boolean  @default(false)
+
+  playerGuesses PlayerGuess[]
 }
 
 model FeudRound {
