@@ -25,7 +25,7 @@ const BonusFeudFinishPage = () => {
     setisLoading(true);
 
     // Map over the bonus rounds and return an array of promises
-    const promises:any = bonus_rounds.data?.map((round) =>
+    const promises: any = bonus_rounds.data?.map((round) =>
       Promise.all(
         round.playerGuesses.map(async (guess) => {
           const priceToAdd = round.doubled
@@ -79,7 +79,10 @@ const BonusFeudFinishPage = () => {
               if (player?.name === "Ashton") img = Ashton;
               if (player?.name === "Leanne") img = Leanne;
               return (
-                <div className="flex flex-col items-center justify-center w-full h-full gap-4">
+                <div
+                  key={round.id}
+                  className="flex flex-col items-center justify-center w-full h-full gap-4"
+                >
                   <h2 className="text-4xl font-medium">{guess.player?.name}</h2>
 
                   <p className="">{guess.score}/5</p>
